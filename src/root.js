@@ -1,19 +1,17 @@
 import React from 'react'
-import styled from 'styled-components'
 import { Provider } from 'react-redux'
-import { BrowserRouter, Switch, Route } from 'react-router-dom'
+import { BrowserRouter, Switch, Redirect, Route } from 'react-router-dom'
+import Repositories from 'components/repositories'
+import { REPOSITORIES_PATH } from 'constants/routes'
 import store from 'store'
-import { ROOT_PATH } from 'constants/routes'
 import 'styles/global'
-
-const StyledApp = styled.div`position: relative;`
-const App = () => <StyledApp>Sup, you reading my old commits?</StyledApp>
 
 const Root = () => (
   <Provider store={store}>
     <BrowserRouter>
       <Switch>
-        <Route path={ROOT_PATH} component={App} />
+        <Route path={REPOSITORIES_PATH} component={Repositories} />
+        <Redirect to={REPOSITORIES_PATH} />
       </Switch>
     </BrowserRouter>
   </Provider>
