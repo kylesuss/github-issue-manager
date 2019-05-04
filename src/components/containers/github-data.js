@@ -11,6 +11,7 @@ const withGithubData = (githubApiRoute) => (WrappedComponent) => {
 
     componentDidMount () {
       async.get(githubApiRoute, {
+        Authorization: `token ${process.env.GITHUB_TOKEN}`
       }).then((response) => {
         this.setState({ isLoading: false, response: response.body })
       }).catch((error) => {
