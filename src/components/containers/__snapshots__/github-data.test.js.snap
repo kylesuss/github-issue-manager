@@ -1,0 +1,84 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`it renders the wrapped component before the request is done 1`] = `
+<GitHubData>
+  <WrappedComponent
+    data={
+      Object {
+        "error": null,
+        "isLoading": true,
+        "response": null,
+      }
+    }
+  >
+    <div>
+      <span>
+        Error: 
+      </span>
+      <span>
+        Response: 
+      </span>
+      <span>
+        Loading: 
+        true
+      </span>
+    </div>
+  </WrappedComponent>
+</GitHubData>
+`;
+
+exports[`it renders the wrapped component with a response 1`] = `
+<GitHubData>
+  <WrappedComponent
+    data={
+      Object {
+        "error": null,
+        "isLoading": false,
+        "response": ":responseBody",
+      }
+    }
+  >
+    <div>
+      <span>
+        Error: 
+      </span>
+      <span>
+        Response: 
+        :responseBody
+      </span>
+      <span>
+        Loading: 
+        false
+      </span>
+    </div>
+  </WrappedComponent>
+</GitHubData>
+`;
+
+exports[`it renders the wrapped component with an error 1`] = `
+<GitHubData>
+  <WrappedComponent
+    data={
+      Object {
+        "error": ":error",
+        "isLoading": false,
+        "response": null,
+      }
+    }
+  >
+    <div>
+      <span>
+        Error: 
+        :error
+      </span>
+      <span>
+        Response: 
+      </span>
+      <span>
+        Loading: 
+        false
+      </span>
+    </div>
+  </WrappedComponent>
+</GitHubData>
+`;

@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`it renders loading 1`] = `
+<div>
+  Loading
+</div>
+`;
+
+exports[`it renders with an error 1`] = `
+<div>
+  Error. Did you setup authentication?
+</div>
+`;
+
+exports[`it renders with data 1`] = `
+<div>
+  <div
+    key=":repoName1"
+  >
+    :repoName1
+  </div>
+  <div
+    key=":repoName2"
+  >
+    :repoName2
+  </div>
+</div>
+`;

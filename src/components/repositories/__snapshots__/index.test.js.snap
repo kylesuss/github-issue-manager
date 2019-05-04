@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`it renders 1`] = `
+<div>
+  <GitHubData />
+  <Switch>
+    <Route
+      exact={true}
+      path="/repositories"
+    />
+    <Route
+      component={[Function]}
+      exact={true}
+      path="/repositories/:id"
+    />
+    <Redirect
+      to="/repositories"
+    />
+  </Switch>
+</div>
+`;
