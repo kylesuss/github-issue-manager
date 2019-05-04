@@ -68,7 +68,7 @@ const withGithubDataAndCompositions = (githubApiRoute, options = {}) => (Wrapped
     throw new Error('You need to provide a name to withGithubData')
   }
 
-  const ComponentWithGithubData = withGithubData(githubApiRoute, options = {})(WrappedComponent)
+  const ComponentWithGithubData = withGithubData(githubApiRoute, options)(WrappedComponent)
 
   const mapStateToProps = (state) => ({
     githubData: state.github[options.name]
