@@ -5,17 +5,11 @@ import { GITHUB_REPOS_URL } from 'constants/github-api-routes'
 
 const RepositoryList = ({ data }) => {
   if (data.isLoading) {
-    return (
-      <div>Loading</div>
-    )
+    return <div>Loading</div>
   }
 
   if (data.error || !data.response) {
-    return (
-      <div>
-        Error. Did you setup authentication?
-      </div>
-    )
+    return <div>Error. Did you setup authentication?</div>
   }
 
   return (
