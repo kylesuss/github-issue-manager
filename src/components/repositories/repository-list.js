@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import withGithubData from 'components/containers/github-data'
+import githubData from 'components/containers/github-data'
 import { GITHUB_REPOS_URL } from 'constants/github-api-routes'
 
 const RepositoryList = ({ data }) => {
@@ -31,8 +31,12 @@ RepositoryList.propTypes = {
   })
 }
 
+const withGithubData = githubData(GITHUB_REPOS_URL, {
+  name: 'repos'
+})
+
 export {
   RepositoryList
 }
 
-export default withGithubData(GITHUB_REPOS_URL)(RepositoryList)
+export default withGithubData(RepositoryList)

@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`it renders the wrapped component before the request is done 1`] = `
-<GitHubData>
+<GithubData
+  setGithubData={[MockFunction]}
+>
   <WrappedComponent
     data={
       Object {
@@ -10,13 +12,16 @@ exports[`it renders the wrapped component before the request is done 1`] = `
         "response": null,
       }
     }
+    setGithubData={[MockFunction]}
   >
     <div>
       <span>
         Error: 
+        none
       </span>
       <span>
         Response: 
+        none
       </span>
       <span>
         Loading: 
@@ -24,11 +29,30 @@ exports[`it renders the wrapped component before the request is done 1`] = `
       </span>
     </div>
   </WrappedComponent>
-</GitHubData>
+</GithubData>
 `;
 
 exports[`it renders the wrapped component with a response 1`] = `
-<GitHubData>
+<GithubData
+  githubData=":responseBody"
+  setGithubData={
+    [MockFunction] {
+      "calls": Array [
+        Array [
+          Object {
+            ":name": ":responseBody",
+          },
+        ],
+      ],
+      "results": Array [
+        Object {
+          "type": "return",
+          "value": undefined,
+        },
+      ],
+    }
+  }
+>
   <WrappedComponent
     data={
       Object {
@@ -37,10 +61,29 @@ exports[`it renders the wrapped component with a response 1`] = `
         "response": ":responseBody",
       }
     }
+    githubData=":responseBody"
+    setGithubData={
+      [MockFunction] {
+        "calls": Array [
+          Array [
+            Object {
+              ":name": ":responseBody",
+            },
+          ],
+        ],
+        "results": Array [
+          Object {
+            "type": "return",
+            "value": undefined,
+          },
+        ],
+      }
+    }
   >
     <div>
       <span>
         Error: 
+        none
       </span>
       <span>
         Response: 
@@ -52,11 +95,13 @@ exports[`it renders the wrapped component with a response 1`] = `
       </span>
     </div>
   </WrappedComponent>
-</GitHubData>
+</GithubData>
 `;
 
 exports[`it renders the wrapped component with an error 1`] = `
-<GitHubData>
+<GithubData
+  setGithubData={[MockFunction]}
+>
   <WrappedComponent
     data={
       Object {
@@ -65,6 +110,7 @@ exports[`it renders the wrapped component with an error 1`] = `
         "response": null,
       }
     }
+    setGithubData={[MockFunction]}
   >
     <div>
       <span>
@@ -73,6 +119,7 @@ exports[`it renders the wrapped component with an error 1`] = `
       </span>
       <span>
         Response: 
+        none
       </span>
       <span>
         Loading: 
@@ -80,5 +127,5 @@ exports[`it renders the wrapped component with an error 1`] = `
       </span>
     </div>
   </WrappedComponent>
-</GitHubData>
+</GithubData>
 `;

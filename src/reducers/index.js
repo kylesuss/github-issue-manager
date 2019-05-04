@@ -1,10 +1,6 @@
 import { combineReducers } from 'redux'
+import github from './github'
 
 export default combineReducers({
-  app: (state = {}, action = {}) => {
-    switch (action.type) {
-      default:
-        return state
-    }
-  }
+  github
 })

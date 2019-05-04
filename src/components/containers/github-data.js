@@ -1,19 +1,43 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import isNil from 'lodash/isNil'
+import * as actions from 'actions/github'
 import * as async from 'utils/async'
 
-const withGithubData = (githubApiRoute) => (WrappedComponent) => {
-  class GitHubData extends Component {
-    state = {
-      error: null,
-      isLoading: true,
-      response: null
+const withGithubData = (githubApiRoute, options = {}) => (WrappedComponent) => {
+  class GithubData extends Component {
+    constructor (props) {
+      super(props)
+
+      this.state = {
+        error: null,
+        isLoading: isNil(props.githubData),
+        response: props.githubData || null
+      }
+    }
+
+    static getDerivedStateFromProps (props, state) {
+      if (props.githubData && !state.response) {
+        return {
+          isLoading: false,
+          response: props.githubData
+        }
+      }
+
+      return null
     }
 
     componentDidMount () {
+      const { response } = this.state
+
+      if (response) { return }
+
       async.get(githubApiRoute, {
         Authorization: `token ${process.env.GITHUB_TOKEN}`
       }).then((response) => {
-        this.setState({ isLoading: false, response: response.body })
+        const { setGithubData } = this.props
+        setGithubData({ [options.name]: response.body })
       }).catch((error) => {
         this.setState({ isLoading: false, error })
       })
@@ -31,7 +55,34 @@ const withGithubData = (githubApiRoute) => (WrappedComponent) => {
     }
   }
 
-  return GitHubData
+  GithubData.propTypes = {
+    githubData: PropTypes.any,
+    setGithubData: PropTypes.func.isRequired
+  }
+
+  return GithubData
 }
 
-export default withGithubData
+const withGithubDataAndCompositions = (githubApiRoute, options = {}) => (WrappedComponent) => {
+  if (!options.name) {
+    throw new Error('You need to provide a name to withGithubData')
+  }
+
+  const ComponentWithGithubData = withGithubData(githubApiRoute, options = {})(WrappedComponent)
+
+  const mapStateToProps = (state) => ({
+    githubData: state.github[options.name]
+  })
+
+  const mapDispatchToProps = (dispatch) => ({
+    setGithubData: (...args) => dispatch(actions.setGithubData(...args))
+  })
+
+  return connect(mapStateToProps, mapDispatchToProps)(ComponentWithGithubData)
+}
+
+export {
+  withGithubData
+}
+
+export default withGithubDataAndCompositions

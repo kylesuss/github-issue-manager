@@ -2,7 +2,7 @@
 
 exports[`it renders 1`] = `
 <div>
-  <GitHubData />
+  <ConnectFunction />
   <Switch>
     <Route
       exact={true}

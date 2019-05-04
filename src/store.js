@@ -14,7 +14,7 @@ const reducer = compose(
 )(rootReducer)
 
 const storage = compose(
-  filter([])
+  filter(['github'])
 )(adapter(window.localStorage))
 
 const enhancer = compose(
