@@ -12,6 +12,18 @@ const StyledRepositoryIssues = styled.div`
   padding-left: ${spacing.DOUBLE};
 `
 
+const StyledEmptyState = styled.div`
+  border-radius: 3px;
+  background: #fafbfc;
+  border: 1px solid #d1d5da;
+  box-shadow: inset 0 0 10px rgba(27, 31, 35, .05);
+  padding: ${spacing.DOUBLE};
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  font-weight: ${fonts.WEIGHT_SEMIBOLD};
+`
+
 const StyledIssue = styled.div`
   padding: ${spacing.HALF};
   display: flex;
@@ -52,11 +64,21 @@ const StyledIssueMeta = styled.div`
 
 const RepositoryIssues = ({ data }) => {
   if (data.isLoading) {
-    return <div>Loading</div>
+    return <StyledRepositoryIssues>Loading</StyledRepositoryIssues>
   }
 
   if (data.error) {
-    return <div>Error loading issues</div>
+    return <StyledRepositoryIssues>Error loading issues</StyledRepositoryIssues>
+  }
+
+  if (data.issues.length < 1) {
+    return (
+      <StyledRepositoryIssues>
+        <StyledEmptyState>
+          No issues!
+        </StyledEmptyState>
+      </StyledRepositoryIssues>
+    )
   }
 
   return (
