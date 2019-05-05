@@ -14,17 +14,19 @@ exports[`it renders with an error 1`] = `
 
 exports[`it renders with data 1`] = `
 <repository-list__StyledRepositoryList>
-  <Link
+  <repository-list__StyledLink
     key=":repoName1"
+    onClick={[Function]}
     to="/repositories/:login1/:repoName1/issues"
   >
     :repoName1
-  </Link>
-  <Link
+  </repository-list__StyledLink>
+  <repository-list__StyledLink
     key=":repoName2"
+    onClick={[Function]}
     to="/repositories/:login2/:repoName2/issues"
   >
     :repoName2
-  </Link>
+  </repository-list__StyledLink>
 </repository-list__StyledRepositoryList>
 `;

@@ -12,6 +12,11 @@ const StyledRepositoryIssues = styled.div`
   padding-left: ${spacing.DOUBLE};
 `
 
+const StyledRepoHeader = styled.div`
+  font-weight: ${fonts.WEIGHT_SEMIBOLD};
+  margin-bottom: ${spacing.HALF};
+`
+
 const StyledEmptyState = styled.div`
   border-radius: 3px;
   background: #fafbfc;
@@ -62,7 +67,7 @@ const StyledIssueMeta = styled.div`
   font-size: 13px;
 `
 
-const RepositoryIssues = ({ data }) => {
+const RepositoryIssues = ({ data, match }) => {
   if (data.isLoading) {
     return <StyledRepositoryIssues>Loading</StyledRepositoryIssues>
   }
@@ -74,6 +79,10 @@ const RepositoryIssues = ({ data }) => {
   if (data.issues.length < 1) {
     return (
       <StyledRepositoryIssues>
+        <StyledRepoHeader>
+          {match.params.repo}
+        </StyledRepoHeader>
+
         <StyledEmptyState>
           No issues!
         </StyledEmptyState>
@@ -83,6 +92,10 @@ const RepositoryIssues = ({ data }) => {
 
   return (
     <StyledRepositoryIssues>
+      <StyledRepoHeader>
+        {match.params.repo}
+      </StyledRepoHeader>
+
       {data.issues.map((issue) => (
         <StyledIssue key={issue.id}>
           <StyledIssueDetails>

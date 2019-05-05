@@ -10,6 +10,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
+    "animated-scroll-to": "^1.2.2",
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
     "normalize.css": "^8.0.1",
