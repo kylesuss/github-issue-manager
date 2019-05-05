@@ -1,7 +1,54 @@
 import React from 'react'
+import styled from 'styled-components'
 import PropTypes from 'prop-types'
+import moment from 'moment'
 import { GITHUB_REPO_ISSUES_URL } from 'constants/github-api-routes'
 import githubData from 'components/containers/github-data'
+import * as fonts from 'styles/fonts'
+import * as spacing from 'styles/spacing'
+
+const StyledRepositoryIssues = styled.div`
+  flex: 1;
+  padding-left: ${spacing.DOUBLE};
+`
+
+const StyledIssue = styled.div`
+  padding: ${spacing.HALF};
+  display: flex;
+  justify-content: space-between;
+  border: 1px solid #e1e4e8;
+  box-sizing: border-box;
+  height: 66px;
+  
+  &:nth-of-type(n + 2) {
+    margin-top: -1px;
+  }
+  
+  &:hover {
+    background: #f6f8fa;
+  }
+`
+
+const StyledIssueDetails = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+`
+
+const StyledIssueTitle = styled.div`
+  font-weight: ${fonts.WEIGHT_SEMIBOLD};
+`
+
+const StyledAvatar = styled.img`
+  width: 40px;
+  height: 40px;
+  border-radius: 2px;
+`
+
+const StyledIssueMeta = styled.div`
+  color: #586069;
+  font-size: 13px;
+`
 
 const RepositoryIssues = ({ data }) => {
   if (data.isLoading) {
@@ -13,13 +60,25 @@ const RepositoryIssues = ({ data }) => {
   }
 
   return (
-    <div>
+    <StyledRepositoryIssues>
       {data.issues.map((issue) => (
-        <div key={issue.id}>
-          {issue.title}
-        </div>
+        <StyledIssue key={issue.id}>
+          <StyledIssueDetails>
+            <StyledIssueTitle>
+              {issue.title}
+            </StyledIssueTitle>
+
+            <StyledIssueMeta>
+              #{issue.number} opened on {moment(issue.created_at).format('MM/DD/YYYY')}, updated {moment(issue.updated_at).fromNow()}
+            </StyledIssueMeta>
+          </StyledIssueDetails>
+
+          {issue.assignee && (
+            <StyledAvatar src={issue.assignee.avatar_url} />
+          )}
+        </StyledIssue>
       ))}
-    </div>
+    </StyledRepositoryIssues>
   )
 }
 
