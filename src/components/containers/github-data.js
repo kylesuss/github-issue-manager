@@ -76,7 +76,6 @@ const githubData = (githubApiRoute, options = {}) => (WrappedComponent) => {
       }).then((response) => {
         const { setGithubData } = this.props
         const { cacheKey } = this.state
-        console.log('here')
         setGithubData({ [cacheKey]: response.body })
       }).catch((error) => {
         this.setState({ isLoading: false, error })

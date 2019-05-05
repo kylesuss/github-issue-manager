@@ -63,3 +63,19 @@ test('it renders the wrapped component with an error', async () => {
   expect(mockSetGithubData).not.toHaveBeenCalled()
   expect(toJson(wrapper)).toMatchSnapshot()
 })
+
+test('it handles refetching', async () => {
+  const mockSetGithubData = jest.fn()
+  const wrapper = mount(<ComponentWithGithubData {...props} setGithubData={mockSetGithubData} />)
+
+  await flushPromises()
+  wrapper.setState({ [NAME]: null, error: null })
+  await flushPromises()
+
+  expect(mockSetGithubData).toHaveBeenCalledTimes(2)
+
+  wrapper.setState({ [NAME]: null, error: ':someError' })
+  await flushPromises()
+
+  expect(mockSetGithubData).toHaveBeenCalledTimes(2)
+})
