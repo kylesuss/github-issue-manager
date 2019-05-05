@@ -4,24 +4,56 @@ import { connect } from 'react-redux'
 import isNil from 'lodash/isNil'
 import * as actions from 'actions/github'
 import * as async from 'utils/async'
+import { buildRoute } from 'utils/routes'
+import { sortAlphabetically } from 'utils/sort'
 
-const withGithubData = (githubApiRoute, options = {}) => (WrappedComponent) => {
+const buildReduxKey = (name, routeVariables) => {
+  const routeVariableValues = Object.values(routeVariables)
+  const sortedValues = sortAlphabetically(routeVariableValues)
+
+  if (!sortedValues.length) { return name }
+
+  return `${name}-${sortedValues.join('-')}`
+}
+
+const githubData = (githubApiRoute, options = {}) => (WrappedComponent) => {
   class GithubData extends Component {
     constructor (props) {
       super(props)
 
+      const routeVariables = options.variables ? options.variables(props) : {}
+
       this.state = {
         error: null,
         isLoading: isNil(props.githubData),
-        response: props.githubData || null
+        routeVariables,
+        cacheKey: buildReduxKey(options.name, routeVariables),
+        [options.name]: props.githubData || null
       }
     }
 
     static getDerivedStateFromProps (props, state) {
-      if (props.githubData && !state.response) {
+      // Handle the initial load of data
+      if (props.githubData && !state[options.name]) {
         return {
           isLoading: false,
-          response: props.githubData
+          [options.name]: props.githubData
+        }
+      }
+
+      const routeVariables = options.variables ? options.variables(props) : {}
+      const cacheKey = buildReduxKey(options.name, routeVariables)
+      const isSameKey = state.cacheKey === cacheKey
+
+      // Handle changes in props that may require new data
+      if (!isSameKey) {
+        const { githubData } = props
+
+        return {
+          isLoading: isNil(githubData),
+          cacheKey,
+          routeVariables,
+          [options.name]: githubData
         }
       }
 
@@ -29,27 +61,35 @@ const withGithubData = (githubApiRoute, options = {}) => (WrappedComponent) => {
     }
 
     componentDidMount () {
-      const { response } = this.state
+      this.fetchData()
+    }
 
-      if (response) { return }
+    componentDidUpdate () {
+      this.fetchData()
+    }
 
-      async.get(githubApiRoute, {
+    fetchData = () => {
+      if (this.state[options.name] || this.state.error) { return }
+
+      async.get(buildRoute(githubApiRoute, this.state.routeVariables), {
         Authorization: `token ${process.env.GITHUB_TOKEN}`
       }).then((response) => {
         const { setGithubData } = this.props
-        setGithubData({ [options.name]: response.body })
+        const { cacheKey } = this.state
+        console.log('here')
+        setGithubData({ [cacheKey]: response.body })
       }).catch((error) => {
         this.setState({ isLoading: false, error })
       })
     }
 
     render () {
-      const { error, isLoading, response } = this.state
+      const { error, isLoading } = this.state
 
       return (
         <WrappedComponent
           {...this.props}
-          data={{ error, isLoading, response }}
+          data={{ error, isLoading, [options.name]: this.state[options.name] }}
         />
       )
     }
@@ -60,19 +100,27 @@ const withGithubData = (githubApiRoute, options = {}) => (WrappedComponent) => {
     setGithubData: PropTypes.func.isRequired
   }
 
+  GithubData.defaultProps = {
+    githubData: null
+  }
+
   return GithubData
 }
 
-const withGithubDataAndCompositions = (githubApiRoute, options = {}) => (WrappedComponent) => {
+const githubDataAndCompositions = (githubApiRoute, options = {}) => (WrappedComponent) => {
   if (!options.name) {
-    throw new Error('You need to provide a name to withGithubData')
+    throw new Error('You need to provide a name to githubData')
   }
 
-  const ComponentWithGithubData = withGithubData(githubApiRoute, options)(WrappedComponent)
+  const ComponentWithGithubData = githubData(githubApiRoute, options)(WrappedComponent)
 
-  const mapStateToProps = (state) => ({
-    githubData: state.github[options.name]
-  })
+  const mapStateToProps = (state, ownProps) => {
+    const routeVariables = options.variables ? options.variables(ownProps) : {}
+
+    return {
+      githubData: state.github[buildReduxKey(options.name, routeVariables)]
+    }
+  }
 
   const mapDispatchToProps = (dispatch) => ({
     setGithubData: (...args) => dispatch(actions.setGithubData(...args))
@@ -82,7 +130,7 @@ const withGithubDataAndCompositions = (githubApiRoute, options = {}) => (Wrapped
 }
 
 export {
-  withGithubData
+  githubData
 }
 
-export default withGithubDataAndCompositions
+export default githubDataAndCompositions

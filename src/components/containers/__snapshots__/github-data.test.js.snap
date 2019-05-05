@@ -2,16 +2,18 @@
 
 exports[`it renders the wrapped component before the request is done 1`] = `
 <GithubData
+  githubData={null}
   setGithubData={[MockFunction]}
 >
   <WrappedComponent
     data={
       Object {
+        ":name": null,
         "error": null,
         "isLoading": true,
-        "response": null,
       }
     }
+    githubData={null}
     setGithubData={[MockFunction]}
   >
     <div>
@@ -56,9 +58,9 @@ exports[`it renders the wrapped component with a response 1`] = `
   <WrappedComponent
     data={
       Object {
+        ":name": ":responseBody",
         "error": null,
         "isLoading": false,
-        "response": ":responseBody",
       }
     }
     githubData=":responseBody"
@@ -100,16 +102,18 @@ exports[`it renders the wrapped component with a response 1`] = `
 
 exports[`it renders the wrapped component with an error 1`] = `
 <GithubData
+  githubData={null}
   setGithubData={[MockFunction]}
 >
   <WrappedComponent
     data={
       Object {
+        ":name": null,
         "error": ":error",
         "isLoading": false,
-        "response": null,
       }
     }
+    githubData={null}
     setGithubData={[MockFunction]}
   >
     <div>

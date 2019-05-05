@@ -17,7 +17,13 @@ test('it renders with an error', () => {
 test('it renders with data', () => {
   const data = {
     isLoading: false,
-    response: [{ name: ':repoName1' }, { name: ':repoName2' }]
+    repos: [{
+      name: ':repoName1',
+      owner: { login: ':login1' }
+    }, {
+      name: ':repoName2',
+      owner: { login: ':login2' }
+    }]
   }
   const wrapper = shallow(<RepositoryList data={data} />)
   expect(toJson(wrapper)).toMatchSnapshot()

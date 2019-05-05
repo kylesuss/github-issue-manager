@@ -8,21 +8,23 @@ exports[`it renders loading 1`] = `
 
 exports[`it renders with an error 1`] = `
 <div>
-  Error. Did you setup authentication?
+  Error loading repos
 </div>
 `;
 
 exports[`it renders with data 1`] = `
-<div>
-  <div
+<repository-list__StyledRepositoryList>
+  <Link
     key=":repoName1"
+    to="/repositories/:login1/:repoName1/issues"
   >
     :repoName1
-  </div>
-  <div
+  </Link>
+  <Link
     key=":repoName2"
+    to="/repositories/:login2/:repoName2/issues"
   >
     :repoName2
-  </div>
-</div>
+  </Link>
+</repository-list__StyledRepositoryList>
 `;
