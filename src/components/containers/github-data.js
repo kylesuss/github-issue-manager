@@ -7,7 +7,7 @@ import * as async from 'utils/async'
 import { buildRoute } from 'utils/routes'
 import { sortAlphabetically } from 'utils/sort'
 
-const buildReduxKey = (name, routeVariables) => {
+const buildCacheKey = (name, routeVariables) => {
   const routeVariableValues = Object.values(routeVariables)
   const sortedValues = sortAlphabetically(routeVariableValues)
 
@@ -27,7 +27,7 @@ const githubData = (githubApiRoute, options = {}) => (WrappedComponent) => {
         error: null,
         isLoading: isNil(props.githubData),
         routeVariables,
-        cacheKey: buildReduxKey(options.name, routeVariables),
+        cacheKey: buildCacheKey(options.name, routeVariables),
         [options.name]: props.githubData || null
       }
     }
@@ -42,7 +42,7 @@ const githubData = (githubApiRoute, options = {}) => (WrappedComponent) => {
       }
 
       const routeVariables = options.variables ? options.variables(props) : {}
-      const cacheKey = buildReduxKey(options.name, routeVariables)
+      const cacheKey = buildCacheKey(options.name, routeVariables)
       const isSameKey = state.cacheKey === cacheKey
 
       // Handle changes in props that may require new data
@@ -117,7 +117,7 @@ const githubDataAndCompositions = (githubApiRoute, options = {}) => (WrappedComp
     const routeVariables = options.variables ? options.variables(ownProps) : {}
 
     return {
-      githubData: state.github[buildReduxKey(options.name, routeVariables)]
+      githubData: state.github[buildCacheKey(options.name, routeVariables)]
     }
   }
 
