@@ -16,6 +16,8 @@ const StyledRepositoryList = styled.div`
   flex-direction: column;
   max-height: 20vh;
   overflow: scroll;
+  border: 1px solid #d1d5da;
+  padding: ${spacing.HALF};
   ${media.mediumScreenUp`
     max-height: none;
     width: 240px;

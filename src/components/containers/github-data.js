@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import isEqual from 'lodash/isEqual'
 import isNil from 'lodash/isNil'
 import * as actions from 'actions/github'
 import * as async from 'utils/async'
@@ -44,11 +45,10 @@ const githubData = (githubApiRoute, options = {}) => (WrappedComponent) => {
       const routeVariables = options.variables ? options.variables(props) : {}
       const cacheKey = buildCacheKey(options.name, routeVariables)
       const isSameKey = state.cacheKey === cacheKey
+      const { githubData } = props
 
       // Handle changes in props that may require new data
-      if (!isSameKey) {
-        const { githubData } = props
-
+      if (!isSameKey || !isEqual(githubData, state[options.name])) {
         return {
           isLoading: isNil(githubData),
           cacheKey,
@@ -74,12 +74,16 @@ const githubData = (githubApiRoute, options = {}) => (WrappedComponent) => {
       async.get(buildRoute(githubApiRoute, this.state.routeVariables), {
         Authorization: `token ${process.env.GITHUB_TOKEN}`
       }).then((response) => {
-        const { setGithubData } = this.props
-        const { cacheKey } = this.state
-        setGithubData({ [cacheKey]: response.body })
+        this.setGithubData(response.body)
       }).catch((error) => {
         this.setState({ isLoading: false, error })
       })
+    }
+
+    setGithubData = (data) => {
+      const { setGithubData } = this.props
+      const { cacheKey } = this.state
+      setGithubData({ [cacheKey]: data })
     }
 
     render () {
@@ -89,6 +93,7 @@ const githubData = (githubApiRoute, options = {}) => (WrappedComponent) => {
         <WrappedComponent
           {...this.props}
           data={{ error, isLoading, [options.name]: this.state[options.name] }}
+          setGithubData={this.setGithubData}
         />
       )
     }

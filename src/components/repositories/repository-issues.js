@@ -1,6 +1,7 @@
-import React from 'react'
-import styled from 'styled-components'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import styled from 'styled-components'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import moment from 'moment'
 import { GITHUB_REPO_ISSUES_URL } from 'constants/github-api-routes'
 import githubData from 'components/containers/github-data'
@@ -24,6 +25,7 @@ const StyledRepoHeader = styled.div`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  line-height: 20px;
 `
 
 const StyledEmptyState = styled.div`
@@ -45,11 +47,8 @@ const StyledIssue = styled.div`
   border: 1px solid #e1e4e8;
   box-sizing: border-box;
   height: 66px;
-  
-  &:nth-of-type(n + 2) {
-    margin-top: -1px;
-  }
-  
+  background: #fff;
+    
   &:hover {
     background: #f6f8fa;
   }
@@ -85,68 +84,129 @@ const StyledIssueMeta = styled.div`
   overflow: hidden;
 `
 
-const RepositoryIssues = ({ data, match }) => {
-  if (data.isLoading) {
-    return <StyledRepositoryIssues>Loading</StyledRepositoryIssues>
+const getDraggableItemStyle = (isDragging, draggableStyle) => ({
+  userSelect: 'none',
+  marginTop: '-1px',
+  boxShadow: isDragging ? '1px 1px 10px -3px #ccc' : 'none',
+  ...draggableStyle
+})
+
+const ISSUES_LIST_DROPPABLE_ID = 'droppable--issues-list'
+
+class RepositoryIssues extends Component {
+  handleDragEnd = (result) => {
+    const { data, setGithubData } = this.props
+
+    if (!result.destination) { return }
+
+    const issues = Array.from(data.issues)
+    const [removed] = issues.splice(result.source.index, 1)
+    issues.splice(result.destination.index, 0, removed)
+
+    setGithubData(issues)
   }
 
-  if (data.error) {
-    return <StyledRepositoryIssues>Error loading issues</StyledRepositoryIssues>
-  }
+  render () {
+    const { data, match } = this.props
 
-  if (data.issues.length < 1) {
+    if (data.isLoading) {
+      return <StyledRepositoryIssues>Loading</StyledRepositoryIssues>
+    }
+
+    if (data.error) {
+      return <StyledRepositoryIssues>Error loading issues</StyledRepositoryIssues>
+    }
+
+    if (data.issues.length < 1) {
+      return (
+        <StyledRepositoryIssues>
+          <StyledRepoHeader>
+            {match.params.repo}
+          </StyledRepoHeader>
+
+          <StyledEmptyState>
+            No issues!
+          </StyledEmptyState>
+        </StyledRepositoryIssues>
+      )
+    }
+
     return (
       <StyledRepositoryIssues>
         <StyledRepoHeader>
           {match.params.repo}
         </StyledRepoHeader>
 
-        <StyledEmptyState>
-          No issues!
-        </StyledEmptyState>
+        <DragDropContext onDragEnd={this.handleDragEnd}>
+          <Droppable droppableId={ISSUES_LIST_DROPPABLE_ID}>
+            {(provided, snapshot) => (
+              <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+              >
+                {data.issues.map((issue, index) => (
+                  <Draggable key={issue.id} draggableId={issue.id} index={index}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                        style={getDraggableItemStyle(
+                          snapshot.isDragging,
+                          provided.draggableProps.style
+                        )}
+                      >
+                        <StyledIssue key={issue.id}>
+                          <StyledIssueDetails>
+                            <StyledIssueTitle>
+                              {issue.title}
+                            </StyledIssueTitle>
+
+                            <StyledIssueMeta>
+                              #{issue.number} opened on {moment(issue.created_at).format('MM/DD/YYYY')}, updated {moment(issue.updated_at).fromNow()}
+                            </StyledIssueMeta>
+                          </StyledIssueDetails>
+
+                          {issue.assignee && (
+                            <StyledAvatar src={issue.assignee.avatar_url} />
+                          )}
+                        </StyledIssue>
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
       </StyledRepositoryIssues>
     )
   }
-
-  return (
-    <StyledRepositoryIssues>
-      <StyledRepoHeader>
-        {match.params.repo}
-      </StyledRepoHeader>
-
-      {data.issues.map((issue) => (
-        <StyledIssue key={issue.id}>
-          <StyledIssueDetails>
-            <StyledIssueTitle>
-              {issue.title}
-            </StyledIssueTitle>
-
-            <StyledIssueMeta>
-              #{issue.number} opened on {moment(issue.created_at).format('MM/DD/YYYY')}, updated {moment(issue.updated_at).fromNow()}
-            </StyledIssueMeta>
-          </StyledIssueDetails>
-
-          {issue.assignee && (
-            <StyledAvatar src={issue.assignee.avatar_url} />
-          )}
-        </StyledIssue>
-      ))}
-    </StyledRepositoryIssues>
-  )
 }
 
 RepositoryIssues.propTypes = {
   data: PropTypes.shape({
     error: PropTypes.string,
     isLoading: PropTypes.bool.isRequired,
-    issues: PropTypes.array
+    issues: PropTypes.arrayOf(PropTypes.shape({
+      assignee: PropTypes.shape({
+        avatar_url: PropTypes.string
+      }),
+      created_at: PropTypes.string.isRequired,
+      id: PropTypes.number.isRequired,
+      number: PropTypes.number.isRequired,
+      title: PropTypes.string.isRequired,
+      updated_at: PropTypes.string.isRequired
+    }))
   }).isRequired,
   match: PropTypes.shape({
     params: PropTypes.shape({
       owner: PropTypes.string.isRequired,
       repo: PropTypes.string.isRequired
     }).isRequired
-  }).isRequired
+  }).isRequired,
+  setGithubData: PropTypes.func.isRequired
 }
 
 const withGithubData = githubData(GITHUB_REPO_ISSUES_URL, {

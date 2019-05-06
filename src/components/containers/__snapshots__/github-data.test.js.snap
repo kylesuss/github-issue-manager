@@ -14,7 +14,7 @@ exports[`it renders the wrapped component before the request is done 1`] = `
       }
     }
     githubData={null}
-    setGithubData={[MockFunction]}
+    setGithubData={[Function]}
   >
     <div>
       <span>
@@ -64,23 +64,7 @@ exports[`it renders the wrapped component with a response 1`] = `
       }
     }
     githubData=":responseBody"
-    setGithubData={
-      [MockFunction] {
-        "calls": Array [
-          Array [
-            Object {
-              ":name": ":responseBody",
-            },
-          ],
-        ],
-        "results": Array [
-          Object {
-            "type": "return",
-            "value": undefined,
-          },
-        ],
-      }
-    }
+    setGithubData={[Function]}
   >
     <div>
       <span>
@@ -114,7 +98,7 @@ exports[`it renders the wrapped component with an error 1`] = `
       }
     }
     githubData={null}
-    setGithubData={[MockFunction]}
+    setGithubData={[Function]}
   >
     <div>
       <span>
