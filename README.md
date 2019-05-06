@@ -5,6 +5,7 @@ GitHub Issue Manager
 
 ```shell
 npm install
+npm start
 ```
 
 ### Environment Variables
