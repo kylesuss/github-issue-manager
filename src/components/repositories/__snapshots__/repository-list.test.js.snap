@@ -1,15 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`it renders loading 1`] = `
-<div>
+<repository-list__StyledRepositoryList>
   Loading
-</div>
+</repository-list__StyledRepositoryList>
 `;
 
 exports[`it renders with an error 1`] = `
-<div>
+<repository-list__StyledRepositoryList>
   Error loading repos
-</div>
+</repository-list__StyledRepositoryList>
 `;
 
 exports[`it renders with data 1`] = `

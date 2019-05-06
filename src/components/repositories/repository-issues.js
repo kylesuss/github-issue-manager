@@ -5,16 +5,25 @@ import moment from 'moment'
 import { GITHUB_REPO_ISSUES_URL } from 'constants/github-api-routes'
 import githubData from 'components/containers/github-data'
 import * as fonts from 'styles/fonts'
+import media from 'styles/media'
 import * as spacing from 'styles/spacing'
 
 const StyledRepositoryIssues = styled.div`
   flex: 1;
-  padding-left: ${spacing.DOUBLE};
+  margin-top: ${spacing.COMMON};
+  overflow: hidden;
+  ${media.mediumScreenUp`
+    margin-top: 0;
+    padding-left: ${spacing.DOUBLE};
+  `}
 `
 
 const StyledRepoHeader = styled.div`
   font-weight: ${fonts.WEIGHT_SEMIBOLD};
   margin-bottom: ${spacing.HALF};
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 `
 
 const StyledEmptyState = styled.div`
@@ -50,10 +59,16 @@ const StyledIssueDetails = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+  overflow: hidden;
+  white-space: nowrap;
+  padding-right: ${spacing.HALF};
 `
 
 const StyledIssueTitle = styled.div`
   font-weight: ${fonts.WEIGHT_SEMIBOLD};
+  text-overflow: ellipsis;
+  overflow: hidden;
+  line-height: 20px;
 `
 
 const StyledAvatar = styled.img`
@@ -65,6 +80,9 @@ const StyledAvatar = styled.img`
 const StyledIssueMeta = styled.div`
   color: #586069;
   font-size: 13px;
+  line-height: 16px;
+  text-overflow: ellipsis;
+  overflow: hidden;
 `
 
 const RepositoryIssues = ({ data, match }) => {

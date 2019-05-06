@@ -7,12 +7,22 @@ import { REPOSITORY_ISSUES_PATH } from 'constants/routes'
 import githubData from 'components/containers/github-data'
 import { GITHUB_REPOS_URL } from 'constants/github-api-routes'
 import * as fonts from 'styles/fonts'
+import media from 'styles/media'
 import * as spacing from 'styles/spacing'
 import { buildRoute } from 'utils/routes'
 
 const StyledRepositoryList = styled.div`
   display: flex;
   flex-direction: column;
+  max-height: 20vh;
+  overflow: scroll;
+  ${media.mediumScreenUp`
+    max-height: none;
+    width: 240px;
+  `}
+  ${media.largeScreenUp`
+    width: 300px;
+  `}
 `
 
 const StyledLink = styled(Link)`
@@ -20,6 +30,12 @@ const StyledLink = styled(Link)`
   text-decoration: none;
   font-weight: ${fonts.WEIGHT_SEMIBOLD};
   margin-bottom: ${spacing.HALF};
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 20px;
+  ${media.mediumScreenUp`
+    overflow: hidden;
+  `}
   
   &:hover {
     text-decoration: underline;
@@ -32,11 +48,11 @@ const scrollToTop = () => animateScrollTo(0, {
 
 const RepositoryList = ({ data }) => {
   if (data.isLoading) {
-    return <div>Loading</div>
+    return <StyledRepositoryList>Loading</StyledRepositoryList>
   }
 
   if (data.error) {
-    return <div>Error loading repos</div>
+    return <StyledRepositoryList>Error loading repos</StyledRepositoryList>
   }
 
   return (
